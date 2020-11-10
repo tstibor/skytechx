@@ -1,4 +1,4 @@
-#include "CRADecSpinBox.h"
+#include "cradecspinbox.h"
 
 #include "skcore.h"
 #include "skutils.h"
@@ -105,11 +105,11 @@ void CDecSpinBox::setDec(double dec)
 }
 
 double CDecSpinBox::getDec()
-{    
+{
   int d = degSpinBox->value();
   int m = minSpinBox->value();
   int s = secSpinBox->value();
-  double value;      
+  double value;
 
   value = qAbs(d) + (m / 60.) + (s / 3600.);
 
@@ -141,7 +141,7 @@ CRADecSpinBox::CRADecSpinBox(QWidget *parent) :
   raSpinBox = new CRASpinBox;
   decSpinBox = new CDecSpinBox;
 
-  setLayout(Qt::Horizontal);  
+  setLayout(Qt::Horizontal);
 }
 
 void CRADecSpinBox::setLayout(Qt::Orientation direction)
@@ -176,5 +176,3 @@ CDecSpinBox *CRADecSpinBox::getDecSpinBox() const
 {
   return decSpinBox;
 }
-
-

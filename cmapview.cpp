@@ -103,11 +103,13 @@ CMapView::CMapView(QWidget *parent) :
   QSettings settings;
   pBmp = new QImage;
   pcMapView = this;
+#ifdef Q_OS_WIN
   m_gamePad = NULL;
-
-  g_bMouseMoveMap = &m_bMouseMoveMap; 
-
+#endif
+  g_bMouseMoveMap = &m_bMouseMoveMap;
+#ifdef Q_OS_WIN
   configureGamepad();
+#endif
   m_lastTeleRaDec.Ra = 0;
   m_lastTeleRaDec.Dec = 0;
 
@@ -178,7 +180,7 @@ CMapView::CMapView(QWidget *parent) :
     m_mapView.x = settings.value("map/x", 0).toDouble();
     m_mapView.y = settings.value("map/y", 0).toDouble();
     m_mapView.roll = settings.value("map/roll", 0).toDouble();
-    m_mapView.fov = settings.value("map/fov", D2R(90)).toDouble();    
+    m_mapView.fov = settings.value("map/fov", D2R(90)).toDouble();
   }
 
   m_lastFOV = m_mapView.fov;
@@ -218,7 +220,7 @@ CMapView::CMapView(QWidget *parent) :
   m_bCustomTeleType = 0;
 
   m_zoomLens = false;
-  m_bInit = false;  
+  m_bInit = false;
 }
 
 
@@ -354,7 +356,7 @@ void CMapView::mousePressEvent(QMouseEvent *e)
 
   if ((e->buttons() & Qt::RightButton) == Qt::RightButton)
   {
-    mapObjContextMenu(this);    
+    mapObjContextMenu(this);
     repaintMap();
     pcMainWnd->updateTrackingMenu();
   }
@@ -614,7 +616,7 @@ void CMapView::tryShowToolTip(const QPoint &pos, bool isPressed)
 ///////////////////////////////////////////////
 void CMapView::mouseReleaseEvent(QMouseEvent *e)
 ///////////////////////////////////////////////
-{  
+{
   setCursor(QCursor(Qt::CrossCursor));
 
   m_bMouseMoveMap = false;
@@ -684,7 +686,7 @@ void CMapView::mouseReleaseEvent(QMouseEvent *e)
 
   if (m_bClick && !(e->modifiers() & Qt::ControlModifier))
   { // search object
-    mapObj_t obj;        
+    mapObj_t obj;
 
     bool found = mapObjSearch(e->pos().x(), e->pos().y(), &obj);
 
@@ -696,8 +698,8 @@ void CMapView::mouseReleaseEvent(QMouseEvent *e)
       ofiItem_t    item;
 
       info.fillInfo(&m_mapView, &obj, &item);
-      pcMainWnd->fillQuickInfo(&item);            
-    }    
+      pcMainWnd->fillQuickInfo(&item);
+    }
     m_bClick = false;
   }
   else if (m_bClick && (e->modifiers() & Qt::ControlModifier))
@@ -815,7 +817,7 @@ double CMapView::calcNewPos(QRect *rc, double *x, double *y)
 void CMapView::keyEvent(int key, Qt::KeyboardModifiers)
 ///////////////////////////////////////////////////////
 {
-  double mul = 1;  
+  double mul = 1;
 
   /*
   if (key == Qt::Key_A)
@@ -1115,7 +1117,7 @@ void CMapView::keyEvent(int key, Qt::KeyboardModifiers)
         trfConvScrPtToXY(m_lastMousePos.x(), m_lastMousePos.y(), rd.Ra, rd.Dec);
       }
       else
-      {       
+      {
         if (type != MO_PLANET && type != MO_COMET && type != MO_ASTER && type != MO_SATELLITE &&
             type != MO_EARTH_SHD)
         {
@@ -1328,10 +1330,10 @@ void CMapView::updateLunarFeatures()
       QString desc;
       if (cLunarFeatures.getCoordinates(&m_mapView, QPointF(obj.x, obj.y), m_lastMousePos, lon, lat, desc))
       {
-        pcMainWnd->updateLunarInfo(desc, lon, lat, true);                                
+        pcMainWnd->updateLunarInfo(desc, lon, lat, true);
         return;
       }
-    }        
+    }
   }
   pcMainWnd->updateLunarInfo("", 0, 0, false);
 }
@@ -1421,7 +1423,7 @@ void CMapView::slotCheckedFlipY(bool checked)
 ////////////////////////////////////////////////////////
 void CMapView::slotTelePlugChange(double ra, double dec)
 ////////////////////////////////////////////////////////
-{      
+{
   m_lastTeleRaDec.Ra = D2R(ra * 15);
   m_lastTeleRaDec.Dec = D2R(dec);
 
@@ -1431,7 +1433,7 @@ void CMapView::slotTelePlugChange(double ra, double dec)
   }
 
   recenterHoldObject(this, false);
-  repaintMap();  
+  repaintMap();
 }
 
 void CMapView::slotMapControl(QVector2D map, double rotate, double zoom)
@@ -1557,7 +1559,7 @@ void CMapView::updateStatusBar(void)
   double azm, alt;
   double epoch;
 
-  trfConvScrPtToXY(m_lastMousePos.x(), m_lastMousePos.y(), ra, dec);  
+  trfConvScrPtToXY(m_lastMousePos.x(), m_lastMousePos.y(), ra, dec);
   cAstro.convRD2AARef(ra, dec, &azm, &alt);
 
   if (m_mapView.epochJ2000 && m_mapView.coordType == SMCT_RA_DEC)
@@ -1667,7 +1669,7 @@ void CMapView::getMapRaDec(double &ra, double &dec, double &fov)
 //////////////////////////////////////////////////////////////////////
 void CMapView::getMapCenterRaDec(double &ra, double &dec, double &fov)
 //////////////////////////////////////////////////////////////////////
-{  
+{
   trfConvScrPtToXY(width() * 0.5, height() * 0.5, ra, dec);
 
   if (m_mapView.epochJ2000)
@@ -1784,7 +1786,7 @@ bool CMapView::isRaDecOnScreen(double ra, double dec)
 /////////////////////////
 void CMapView::printMap()
 /////////////////////////
-{  
+{
   CGetProfile dlgProfile(this);
 
   if (dlgProfile.exec() == DL_CANCEL)
@@ -1839,7 +1841,7 @@ void CMapView::printMapView(QPrinter *prn, const QString &profileName)
   }
 
   m_mapView.starMag = getStarMagnitudeLevel() + m_mapView.starMagAdd;
-  m_mapView.dsoMag = getDsoMagnitudeLevel() + m_mapView.dsoMagAdd;  
+  m_mapView.dsoMag = getDsoMagnitudeLevel() + m_mapView.dsoMagAdd;
   m_mapView.mapEpoch = (m_mapView.epochJ2000 || !g_skSet.map.star.useProperMotion) ? JD2000 : m_mapView.jd;
   g_onPrinterBW = bw;
   smRenderSkyMap(&m_mapView, &p1, img);
@@ -1907,11 +1909,11 @@ void CMapView::repaintMap(bool bRepaint)
 ////////////////////////////////////////
 {
   if (!m_bInit)
-    return;    
+    return;
 
   m_mapView.jd = CLAMP(m_mapView.jd, MIN_JD, MAX_JD);
   m_mapView.roll = CLAMP(m_mapView.roll, D2R(-90), D2R(90));
-  m_mapView.mapEpoch = (m_mapView.epochJ2000 || !g_skSet.map.star.useProperMotion) ? JD2000 : m_mapView.jd;  
+  m_mapView.mapEpoch = (m_mapView.epochJ2000 || !g_skSet.map.star.useProperMotion) ? JD2000 : m_mapView.jd;
 
   g_meteorShower.load((int)jdGetYearFromJD(m_mapView.jd));
 
@@ -1959,7 +1961,7 @@ void CMapView::repaintMap(bool bRepaint)
   updateStatusBar();
   pcMainWnd->updateControlInfo();
   QWidget::update();
-  g_forcedRecalculate = false;  
+  g_forcedRecalculate = false;
 }
 
 //////////////////////////////////////
@@ -2022,18 +2024,18 @@ void CMapView::paintEvent(QPaintEvent *)
   if (g_nightConfig && g_nightRepaint)
   {
     for (int ii = 0; ii < pBmp->height(); ii++)
-    {           
+    {
       QRgb* rgbpixel = reinterpret_cast<QRgb*>(pBmp->scanLine(ii));
       for (int jj = 0; jj < pBmp->width(); jj++)
-      {        
+      {
         int gray = qGray(*rgbpixel);
         *rgbpixel = (255 << 24) | (gray << 16);
         rgbpixel++;
       }
     }
     g_nightRepaint = false;
-  }  
-  p.drawImage(0, 0, *pBmp);  
+  }
+  p.drawImage(0, 0, *pBmp);
 
   if (m_zoomLens)
   {
@@ -2067,8 +2069,8 @@ void CMapView::paintEvent(QPaintEvent *)
     trfRaDecToPointNoCorrect(&info->radec, &pt);
     if (trfProjectPoint(&pt))
     {
-      p.setPen(QPen(QColor(g_skSet.map.objSelectionColor), 3));      
-      p.drawCornerBox(pt.sx, pt.sy, 10, 4);      
+      p.setPen(QPen(QColor(g_skSet.map.objSelectionColor), 3));
+      p.drawCornerBox(pt.sx, pt.sy, 10, 4);
     }
   }
 
@@ -2318,7 +2320,7 @@ void CMapView::paintEvent(QPaintEvent *)
 }
 
 void CMapView::slotAnimChanged(curvePoint_t &p)
-{  
+{
   centerMap(p.x, p.y, p.fov);
 }
 
@@ -2342,14 +2344,14 @@ void CMapView::slotSlewingTimer()
   }
 }
 
-
+#ifdef Q_OS_WIN
 void CMapView::slotGamepadChange(const gamepad_t &state, double speedMul)
 {
   double leftRight = state.left > 0 ? -state.left : state.right;
   double upDown = state.up > 0 ? -state.up : state.down;
   double zoom = state.zoomIn > 0 ? -state.zoomIn : state.zoomOut;
   double starMag = state.starMagPlus > 0 ? state.starMagPlus : -state.starMagMinus;
-  double dsoMag = state.DSOMagPlus > 0 ? state.DSOMagPlus : -state.DSOMagMinus;  
+  double dsoMag = state.DSOMagPlus > 0 ? state.DSOMagPlus : -state.DSOMagMinus;
 
   double x, y;
   double angle = atan2(leftRight, -upDown);
@@ -2533,3 +2535,4 @@ void CMapView::loadGamepadConfig(gamepadConfig_t &config)
     config.config.append(ctrl);
   }
 }
+#endif

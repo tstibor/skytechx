@@ -54,6 +54,11 @@ else
 
 Debug:win32-msvc2013   :  QMAKE_LFLAGS += /INCREMENTAL:NO
 
+gcc {
+  QMAKE_CXXFLAGS += -fopenmp -mavx -fabi-version=0 -ffast-math
+  QMAKE_LFLAGS += -fopenmp
+  QMAKE_CXXFLAGS_RELEASE *= -O3
+}
 
 TARGET = skytech_x
 TEMPLATE = app
@@ -329,7 +334,6 @@ SOURCES += main.cpp\
     cdssopendialog.cpp \
     colongitude.cpp \
     cucac5.cpp \
-    hipsadjustment.cpp \
     chipsadjustment.cpp \
     shortcutdialog.cpp
 
@@ -580,7 +584,6 @@ HEADERS  += mainwindow.h \
     cdssopendialog.h \
     colongitude.h \
     cucac5.h \
-    hipsadjustment.h \
     chipsadjustment.h \
     shortcutdialog.h
 
@@ -688,7 +691,6 @@ FORMS    += mainwindow.ui \
     variablestarsdialog.ui \
     twilightdialog.ui \
     lunarphase.ui \
-    hipsadjustment.ui \
     chipsadjustment.ui \
     shortcutdialog.ui
 

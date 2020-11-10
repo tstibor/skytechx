@@ -1,7 +1,7 @@
 #include "cgamepad.h"
 #include "skcore.h"
 
-#ifdef Q_OS_WIN32
+#ifdef Q_OS_WIN
 
 CGamepad::CGamepad(int period, double deadZone, double speedMul, QObject *parent) :
   QObject(parent) ,
@@ -73,7 +73,7 @@ double CGamepad::readData(int axis, JOYINFOEX *joy)
   double dVal;
   double minVal;
   double maxVal;
-  double pov = joy->dwPOV / 100.0;  
+  double pov = joy->dwPOV / 100.0;
 
   switch (axis)
   {
@@ -113,7 +113,7 @@ double CGamepad::readData(int axis, JOYINFOEX *joy)
     case GP_Y_MINUS_AXIS:
       value = joy->dwYpos;
       minVal = m_yMinMax[0];
-      maxVal = m_yMinMax[1];      
+      maxVal = m_yMinMax[1];
       break;
 
     case GP_Z_PLUS_AXIS:
@@ -141,7 +141,7 @@ double CGamepad::readData(int axis, JOYINFOEX *joy)
   if (dVal >= -m_deadZone && dVal <= m_deadZone)
   {
     dVal = 0;
-  }  
+  }
 
   switch (axis)
   {
@@ -162,7 +162,7 @@ double CGamepad::readData(int axis, JOYINFOEX *joy)
 
   QEasingCurve curve = QEasingCurve(QEasingCurve::InCirc);
 
-  dVal = curve.valueForProgress(qAbs(dVal));  
+  dVal = curve.valueForProgress(qAbs(dVal));
 
   return dVal;
 }
@@ -281,4 +281,4 @@ void CGamepad::slotTimeout()
 }
 
 
-#endif // Q_OS_WIN32
+#endif // Q_OS_WIN

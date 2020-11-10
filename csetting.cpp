@@ -72,7 +72,7 @@ CSetting::CSetting(QWidget *parent, int tab) :
   // autosave
   ui->checkBox_7->setChecked(g_autoSave.tracking);
   ui->checkBox_8->setChecked(g_autoSave.events);
-  ui->checkBox_9->setChecked(g_autoSave.drawing);  
+  ui->checkBox_9->setChecked(g_autoSave.drawing);
   ui->checkBox_19->setChecked(g_autoSave.dssImages);
   ui->checkBox_10->setChecked(g_showZoomBar);
 
@@ -89,7 +89,7 @@ CSetting::CSetting(QWidget *parent, int tab) :
 
   ui->cb_iconSize->addItem(tr("24x24 (Default size)"));
   ui->cb_iconSize->addItem(tr("18x18 (Small size)"));
-  ui->cb_iconSize->addItem(tr("32x32 (Large size)"));      
+  ui->cb_iconSize->addItem(tr("32x32 (Large size)"));
 
   // HIPS
   ui->spinBox_8->setValue(g_hipsRenderer->manager()->setting("hips_mem_cache").toInt() / ONE_MB);
@@ -154,9 +154,9 @@ CSetting::CSetting(QWidget *parent, int tab) :
   ui->horizontalSlider_17->setRange(0, 100);
   ui->horizontalSlider_17->setEnabled(ui->checkBox_21->isChecked());
   ui->horizontalSlider_17->setValue(setting.value("sound_volume", 80.0).toDouble());
-
+#ifdef Q_OS_WIN
   fillGamepad();
-
+#endif
   switch (setting.value("eph_type", EPT_PLAN404).toInt())
   {
     case EPT_PLAN404:
@@ -702,7 +702,7 @@ void CSetting::setValues()
   ui->doubleSpinBox_29->setValue(set.map.gsc.fromMag);
 
   // other
-  ui->checkBox_18->setChecked(set.map.smartLabels);  
+  ui->checkBox_18->setChecked(set.map.smartLabels);
 
   QList<urlItem_t> strList;
   CUrlFile::readFile(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + "/data/urls/comets.url", &strList);
@@ -817,9 +817,9 @@ void CSetting::apply()
 //////////////////////
 {
   g_skSet = set;
-
+#ifdef Q_OS_WIN
   applyGamepad();
-
+#endif
   // jpl
   QList <jplData_t> jplList;
 
@@ -872,7 +872,7 @@ void CSetting::apply()
   g_skSet.map.starBitmapName = ui->comboBox->itemData(ui->comboBox->currentIndex()).toString();
   g_skSet.map.star.saturation = ui->spinBox_5->value();
 
-  cStarRenderer.open(g_skSet.map.starBitmapName);  
+  cStarRenderer.open(g_skSet.map.starBitmapName);
 
   g_skSet.map.star.showProperMotion = ui->cb_properMotion->isChecked();
   g_skSet.map.star.useProperMotion = ui->cb_star_motion->isChecked();
@@ -1073,7 +1073,7 @@ void CSetting::apply()
 
   g_skSet.map.ucac4.show = ui->showUCAC4CheckBox->isChecked();
   g_skSet.map.ucac4.fromFOV = D2R(ui->doubleSpinBox_37->value());
-  g_skSet.map.ucac4.fromMag = ui->doubleSpinBox_36->value();  
+  g_skSet.map.ucac4.fromMag = ui->doubleSpinBox_36->value();
 
   // UCAC5
   cUcac5.setUCAC5Dir(ui->lineEdit_9->text());
@@ -1135,7 +1135,7 @@ void CSetting::apply()
   {
     settings.setValue("sun_online_period", period);
     settings.setValue("sun_online_startup_only", false);
-  } 
+  }
 
   // other
   g_skSet.map.smartLabels = ui->checkBox_18->isChecked();
@@ -1167,7 +1167,7 @@ void CSetting::apply()
   pcMainWnd->statusBar->saveStatusBar();
 
   setCreateFonts();
-  pcMapView->repaintMap(true);  
+  pcMapView->repaintMap(true);
 }
 
 //////////////////////////////////////////////////////////
@@ -1287,7 +1287,7 @@ void CSetting::on_pushButton_clicked()
 
   apply();
 
-  setSave(g_setName, &g_skSet);    
+  setSave(g_setName, &g_skSet);
 
   done(DL_OK);
 }
@@ -1749,7 +1749,7 @@ void CSetting::on_pushButton_36_clicked()
 /////////////////////////////////////////
 void CSetting::on_pushButton_37_clicked()
 /////////////////////////////////////////
-{  
+{
   QPen pen = QPen(QColor(set.map.drawing.color),
                   set.map.drawing.width,
                   (Qt::PenStyle)set.map.drawing.style);
@@ -1974,6 +1974,7 @@ bool CSetting::resetQuestion()
   return false;
 }
 
+#ifdef Q_OS_WIN
 void CSetting::fillGamepad()
 {
   gamepadConfig_t config;
@@ -2134,6 +2135,7 @@ void CSetting::applyGamepad()
   pcMapView->saveGamepadConfig(config);
   pcMapView->configureGamepad();
 }
+#endif
 
 void CSetting::fillConstNames()
 {
@@ -2650,7 +2652,7 @@ void CSetting::fillSelPos()
   else if (m_selMapView.coordType == SMCT_ALT_AZM)
     str = tr("Hor. ") + getStrDeg(R360 - m_selMapView.x) + " / " + getStrDeg(m_selMapView.y);
   else
-    str = tr("Ecl. ") + getStrDeg(m_selMapView.x) + " / " + getStrDeg(m_selMapView.y);  
+    str = tr("Ecl. ") + getStrDeg(m_selMapView.x) + " / " + getStrDeg(m_selMapView.y);
 
   str += " " + tr("FOV : ") + getStrDeg(m_selMapView.fov, true) + " / " + tr(" Roll : ") + getStrDeg(m_selMapView.roll, true);
 

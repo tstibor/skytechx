@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QTimer>
 
-#ifdef Q_OS_WIN32
+#ifdef Q_OS_WIN
   #include <windows.h>
 #endif
 
@@ -76,7 +76,7 @@ class CGamepad : public QObject
 {
   Q_OBJECT
 
-#ifdef Q_OS_WIN32
+#ifdef Q_OS_WIN
 
 public:
   explicit CGamepad(int period = 50, double deadZone = 0.1, double speedMul = 1.0, QObject *parent = 0);

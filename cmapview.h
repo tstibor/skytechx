@@ -9,7 +9,9 @@
 #include "jd.h"
 #include "czoombar.h"
 #include "cdemonstration.h"
+#ifdef Q_OS_WIN
 #include "cgamepad.h"
+#endif
 #include "skmapcontrol.h"
 
 #define SMCT_RA_DEC        0
@@ -101,11 +103,11 @@ public:
 
   void printMap(void);
   void printMapView(QPrinter *prn, const QString &profileName);
-
+#ifdef Q_OS_WIN
   void configureGamepad();
   void saveGamepadConfig(gamepadConfig_t &config);
   void loadGamepadConfig(gamepadConfig_t &config);
-
+#endif
   QImage *getImage();
 
   mapView_t m_mapView;
@@ -122,9 +124,9 @@ public:
   CDemonstration *m_demo;
   QTimer *slewingTimer;
   bool slewBlink;
-
+#ifdef Q_OS_WIN
   CGamepad *m_gamePad;
-
+#endif
   void enableShapeEditor(bool enable);
   void saveShape();
   void loadShape();
@@ -172,7 +174,7 @@ private:
 
   double m_lastFOV;
   double m_lastRA;
-  double m_lastDec;  
+  double m_lastDec;
 
 signals:
 
@@ -185,7 +187,9 @@ public slots:
   //void slotZoom(float zoom);
   void slotMapControl(QVector2D map, double rotate, double zoom);
   void slotSlewingTimer();
+#ifdef Q_OS_WIN
   void slotGamepadChange(const gamepad_t &state, double speedMul);
+#endif
 };
 
 extern CMapView      *pcMapView;

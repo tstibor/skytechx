@@ -28,8 +28,10 @@ protected:
    void setProfileLabel(void);
    void fillProfiles(void);
    bool resetQuestion();
+#ifdef Q_OS_WIN
    void fillGamepad();
    void applyGamepad();
+#endif
    void fillConstNames();
 
 public slots:
@@ -211,7 +213,7 @@ private slots:
 
    void on_pushButton_75_clicked();
 
-   void on_pushButton_73_clicked();   
+   void on_pushButton_73_clicked();
 
    void on_doubleSpinBox_b_valueChanged(double arg1);
 
