@@ -43,11 +43,13 @@ typedef struct
   int        id;
 } sbItem_t;
 
+#if 0
 typedef struct
 {
   int id;
   int width;
 } statusBarItem_t;
+#endif
 
 class CStatusBar : public QObject
 {

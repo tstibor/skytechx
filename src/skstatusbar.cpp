@@ -44,7 +44,7 @@ void SkStatusBar::resizeEvent(QResizeEvent *event)
 
 void SkStatusBar::addItem(int id, bool textValue, int width, const QString &text, const QString &value)
 {
-  _ASSERT(!tItemMap.contains(id));
+  Q_ASSERT(!m_tItemMap.contains(id));
 
   statusBarItem_t item;
   SkStatusWidget *w = new SkStatusWidget(this);
