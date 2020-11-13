@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Object>
+
+<Equator_radius>
+1734.4 km
+</Equator_radius>
+
+<Semi_major_axis>
+384400 km
+</Semi_major_axis>
+
+<Eccentricity>
+0.0549	
+</Eccentricity>
+
+<Mass>
+0.073483 10e24 kg
+</Mass>
+
+<Rotation_period>
+27.32166 days
+</Rotation_period>
+
+<Escape_velocity>
+2.38 km/s2
+</Escape_velocity>
+
+</Object>
